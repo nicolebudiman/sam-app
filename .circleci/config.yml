@@ -7,5 +7,6 @@ workflows:
     jobs:
       - sam/deploy:
           name: deploy-staging
+          s3-bucket: $AWS_ARTIFACT_BUCKET
           stack-name: sam-app
           template: template.yaml
