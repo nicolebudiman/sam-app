@@ -1,24 +1,17 @@
-orbs:
-  sam: circleci/aws-sam-serverless@1.0.0
-  python: circleci/python@0.3.0
+# 1. We must use version 2.1 to enable orbs.
 version: 2.1
 
-jobs:
-  build_and_deploy:
-    executor: python/default
-    steps:
-      - checkout
-      - run:
-          command: |
-            pip install virtualenv
-            virtualenv -p python3 venv
-            source venv/bin/activate
-      - run: pip install aws-sam-cli==1.1.0
-      - run: sam build
-      - run: sam deploy
+# 2. Bring in the current version of the aws-serverless orb
+orbs:
+  # 3. We name our imported orb “sam”
+  sam: circleci/aws-serverless@1.0.1
 
 workflows:
-  version: 2
-  build-and-deploy:
+  build_and_deploy:
     jobs:
-      - build_and_deploy
+      # 4. imported-name/job
+      - sam/deploy:
+          name: deploy-production
+          s3-bucket: $AWS_ARTIFACT_BUCKET
+          stack-name: sam-app
+          template: template.yaml
